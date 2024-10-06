@@ -1,0 +1,64 @@
+version: '3.7'
+
+services:
+  frontend:
+    container_name: frontend
+    env_file:
+      - .env
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    command: npm run start
+    networks:
+      - app-nw
+
+  db:
+    build:
+     context: .
+     dockerfile: Dockerfile.pgsql
+    environment:
+      - DB_HOSTNAME=${host}
+      - POSTGRES_USER=${user}
+      - POSTGRES_PASSWORD=${password}
+      - POSTGRES_DB_NAME=${dbname}
+      - POSTGRES_PORT=${port}
+      - DB_SSLMODE=${sslmode}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-nw
+
+  backend:
+    container_name: backend
+    restart: always
+    depends_on:
+      - db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=${host}
+      - DB_USER=${user}
+      - DB_PASSWORD=${password}
+      - DB_NAME=${dbname}
+      - DB_PORT=${port}
+      - DB_SSLMODE=${sslmode}
+      - ALLOWED_ORGINS=${ALLOWED_ORGINS}
+    stdin_open: true
+    command: go run main.go
+    networks:
+      - app-nw
+
+networks:
+   app-nw:
+
+volumes:
+  db-data:
+
