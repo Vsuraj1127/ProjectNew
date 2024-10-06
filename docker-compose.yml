@@ -8,6 +8,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.frontend
+    environment:
+      - REACT_APP_SERVER_URL=http://ec2-52-66-8-43.ap-south-1.compute.amazonaws.com:8080/employees
     ports:
       - "3000:3000"
     stdin_open: true
