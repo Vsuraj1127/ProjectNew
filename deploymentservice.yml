@@ -144,7 +144,7 @@ spec:
           - name: DB_PASSWORD
             valueFrom:
                secretKeyRef:
-                  name: DB_secret
+                  name: DB-secret
                   key: DB_PASSWORD
           resources:
             requests:
