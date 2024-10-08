@@ -51,6 +51,11 @@ kind: Service
 metadata:
   name: frontend-service
   namespace: default
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-connection-draining-timeout: "30
 spec:
   selector:
     app: frontend-service
@@ -223,4 +228,3 @@ spec:
     - port: 5432
       targetPort: 5432
   type: ClusterIP
-
