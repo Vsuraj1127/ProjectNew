@@ -69,7 +69,7 @@ pipeline {
                         script {
                             dir('frontend') {
                                 echo 'Building Docker Image for frontend'
-                                sh 'docker build -t $FRONTEND_IMAGE .'
+                                sh 'docker build -t $FRONTEND_IMAGE -f Dockerfile.frontend .'
                             }
                         }
                     }
@@ -79,7 +79,7 @@ pipeline {
                         script {
                             dir('backend') {
                                 echo 'Building Docker Image for backend'
-                                sh 'docker build -t $BACKEND_IMAGE .'
+                                sh 'docker build -t $BACKEND_IMAGE -f Dockerfile.backend .'
                             }
                         }
                     }
@@ -89,7 +89,7 @@ pipeline {
                         script {
                             dir("${env.WORKSPACE}") {
                                 echo 'Building Docker Image for postgressql'
-                                sh 'docker build -t $PGSQL_IMAGE .'
+                                sh 'docker build -t $PGSQL_IMAGE -f Dockerfile.pgsql .'
                             }
                         }
                     }
