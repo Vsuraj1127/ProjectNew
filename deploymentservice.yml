@@ -71,7 +71,7 @@ metadata:
   name: DB-config
   namespace: default
 data:
-  DB_HOST: "db"
+  DB_HOST: "pgsql-service.default.svc.cluster.local"
   DB_USER: "postgres1"
   DB_NAME: "pgdb"
   DB_PORT: "5432"
