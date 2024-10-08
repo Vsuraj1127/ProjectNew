@@ -121,15 +121,6 @@ pipeline {
             }
         }
 
-        stage('Deploy Ingress Controller') {
-            steps {
-                script {
-                    echo 'Deploying NGINX Ingress Controller'
-                    sh 'kubectl apply -f nginx-ingress-controller.yml --validate=false'
-                }
-            }
-        }
-
         stage('Kubernetes Deployment') {
             steps {
                 script {
