@@ -1,86 +1,113 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs "NodeJS" // Ensure Node.js is set up
+        go "Go" // Ensure Go is set up
+    }
+
     environment {
-        AWS_ACCESS_KEY_ID = credentials('AWS-KEY') // Ensure this is a valid credential ID in Jenkins
-        AWS_SECRET_ACCESS_KEY = credentials('AWS-KEY') // Same as above
-        DOCKER_CREDENTIALS_ID = 'dockerhub'
-        SONAR_TOKEN = credentials('sonar-token')
+        FRONTEND_IMAGE = 'vsuraj1127/frontend-image:latest' // Replace with your frontend image name
+        BACKEND_IMAGE = 'vsuraj1127/backend-image:latest'   // Replace with your backend image name
+        PGSQL_IMAGE = 'vsuraj1127/pgsql-image:latest'       // Replace with your PostgreSQL image name
+        DOCKER_CREDENTIALS_ID = 'dockerhub' // Replace with your Docker Hub credentials ID
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                echo 'Checking out the code'
-                git branch: 'branch1', url: 'git@github.com:Vsuraj1127/ProjectNew.git'
+        stage('Install Dependencies') {
+            parallel {
+                stage('Frontend') {
+                    steps {
+                        dir('frontend') {
+                            sh 'npm install'
+                        }
+                    }
+                }
+                stage('Backend') {
+                    steps {
+                        dir('backend') {
+                            sh 'go mod tidy'
+                        }
+                    }
+                }
             }
         }
-
+        stage('Run Tests') {
+            parallel {
+                stage('Frontend Tests') {
+                    steps {
+                        dir('frontend') {
+                            sh 'npm run test -- --coverage --watchAll=false || true'
+                        }
+                    }
+                }
+                stage('Backend Tests') {
+                    steps {
+                        dir('backend') {
+                            sh 'go test -coverprofile=coverage.out ./...'
+                        }
+                    }
+                }
+            }
+        }
         stage('Analyze Services') {
             parallel {
                 stage('Analyze Frontend') {
                     steps {
-                        script {
-                            dir('frontend') {
-                                echo 'Analyzing the frontend'
-                                sh '''
-                                mvn sonar:sonar \
-                                    -Dsonar.projectKey=user-service \
-                                    -Dsonar.host.url=http://13.201.50.177:9000 \
-                                    -Dsonar.login=${SONAR_TOKEN} \
-                                    -Dsonar.java.binaries=target/classes
-                                '''
+                        dir('frontend') {
+                            script {
+                                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                                    def scannerHome = tool 'SonarQube Scanner'
+                                    withEnv(["PATH+SONAR=${scannerHome}/bin"]) {
+                                        sh "sonar-scanner -Dsonar.projectKey=frontend-project -Dsonar.host.url=http://13.233.111.164:9000 -Dsonar.login=${SONAR_TOKEN}"
+                                    }
+                                }
                             }
                         }
                     }
                 }
-                stage('Analyze backend') {
+                stage('Analyze Backend') {
                     steps {
-                        script {
-                            dir('backend') {
-                                echo 'Analyzing the backend'
-                                sh '''
-                                mvn sonar:sonar \
-                                    -Dsonar.projectKey=order-service \
-                                    -Dsonar.host.url=http://13.201.50.177:9000 \
-                                    -Dsonar.login=${SONAR_TOKEN} \
-                                    -Dsonar.java.binaries=target/classes
-                                '''
+                        dir('backend') {
+                            script {
+                                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                                    def scannerHome = tool 'SonarQube Scanner'
+                                    withEnv(["PATH+SONAR=${scannerHome}/bin"]) {
+                                        sh "sonar-scanner -Dsonar.projectKey=backend-project -Dsonar.host.url=http://13.233.111.164:9000 -Dsonar.login=${SONAR_TOKEN} -Dsonar.go.coverage.reportPaths=coverage.out"
+                                    }
+                                }
                             }
                         }
                     }
-                }   
+                }
             }
         }
+
         stage('Clean Up Old Docker Images') {
             steps {
                 script {
                     echo 'Cleaning up old Docker images'
-                    sh 'docker rmi $(docker images)'
+                    sh 'docker rmi $(docker images -q) || true' // Safely handle cases with no images
                     sh 'docker image prune -f'
                 }
             }
         }
 
-        stage('Docker Frontend Image Build') {
+        stage('Docker Image Build') {
             parallel {
-                stage('Build docker image for frontend') {
+                stage('Build Frontend Docker Image') {
                     steps {
-                        script {
-                            dir('frontend') {
-                                echo 'Building Docker Image for frontend'
-                                sh 'docker build -t $FRONTEND_IMAGE -f Dockerfile.frontend .'
-                            }
+                        dir('frontend') {
+                            echo 'Building Docker Image for frontend'
+                            sh 'docker build -t $FRONTEND_IMAGE -f Dockerfile.frontend .'
                         }
                     }
                 }
                 stage('Build Backend Docker Image') {
                     steps {
-                        script {
-                            dir('backend') {
-                                echo 'Building Docker Image for backend'
-                                sh 'docker build -t $BACKEND_IMAGE -f Dockerfile.backend .'
-                            }
+                        dir('backend') {
+                            echo 'Building Docker Image for backend'
+                            sh 'docker build -t $BACKEND_IMAGE -f Dockerfile.backend .'
                         }
                     }
                 }
@@ -88,7 +115,7 @@ pipeline {
                     steps {
                         script {
                             dir("${env.WORKSPACE}") {
-                                echo 'Building Docker Image for postgressql'
+                                echo 'Building Docker Image for PostgreSQL'
                                 sh 'docker build -t $PGSQL_IMAGE -f Dockerfile.pgsql .'
                             }
                         }
@@ -130,13 +157,17 @@ pipeline {
             }
         }
     }
-
+    
     post {
         success {
             echo 'All services built, pushed, and deployed successfully!'
         }
         failure {
             echo 'Pipeline failed. Please check the logs.'
+        }
+        always {
+            echo 'Cleaning up resources...'
+            // Any additional cleanup actions can be added here
         }
     }
 }
