@@ -14,6 +14,13 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out the code'
+                git branch: 'testing', url: 'https://github.com/Vsuraj1127/ProjectNew.git'
+            }
+        }
+
         stage('Install Dependencies') {
             parallel {
                 stage('Frontend') {
@@ -32,6 +39,7 @@ pipeline {
                 }
             }
         }
+
         stage('Run Tests') {
             parallel {
                 stage('Frontend Tests') {
@@ -50,6 +58,7 @@ pipeline {
                 }
             }
         }
+
         stage('Analyze Services') {
             parallel {
                 stage('Analyze Frontend') {
