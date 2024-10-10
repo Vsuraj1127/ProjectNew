@@ -19,7 +19,7 @@ metadata:
   name: db-secret
   namespace: default
 data:
-  DB_PASSWORD: "postgres@123"
+  DB_PASSWORD: "cG9zdGdyZXNAMTIz"
 
 ---
 apiVersion: v1
