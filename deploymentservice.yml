@@ -67,7 +67,7 @@ spec:
     spec:
       containers:
         - name: pgsql
-          image: vsuraj1127/pgsql:latest
+          image: vsuraj1127/pgsql-image:latest
           ports:
             - containerPort: 5432
           envFrom:
@@ -129,7 +129,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: vsuraj1127/backend:latest
+          image: vsuraj1127/backend-image:latest
           ports:
             - containerPort: 8080
           envFrom:
@@ -193,7 +193,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: vsuraj1127/frontend:latest
+          image: vsuraj1127/frontend-image:latest
           env:
           - name: REACT_APP_SERVER_URL
             valueFrom:
