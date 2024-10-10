@@ -2,15 +2,18 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS" // Ensure Node.js is set up
-        go "Go" // Ensure Go is set up
+        nodejs 'NodeJS' // Ensure Node.js is set up
+        go 'Go' // Ensure Go is set up
     }
 
     environment {
-        FRONTEND_IMAGE = 'vsuraj1127/frontend-image:latest' // Replace with your frontend image name
-        BACKEND_IMAGE = 'vsuraj1127/backend-image:latest'   // Replace with your backend image name
-        PGSQL_IMAGE = 'vsuraj1127/pgsql-image:latest'       // Replace with your PostgreSQL image name
-        DOCKER_CREDENTIALS_ID = 'dockerhub' // Replace with your Docker Hub credentials ID
+        FRONTEND_IMAGE = 'vsuraj1127/frontend-image:latest' // Frontend image name
+        BACKEND_IMAGE = 'vsuraj1127/backend-image:latest'   // Backend image name
+        PGSQL_IMAGE = 'vsuraj1127/pgsql-image:latest'       // PostgreSQL image name
+        DOCKER_CREDENTIALS_ID = 'dockerhub' // Docker Hub credentials ID
+        AWS_ACCESS_KEY_ID = credentials('AWS-KEY') // Ensure this is a valid credential ID in Jenkins
+        AWS_SECRET_ACCESS_KEY = credentials('AWS-KEY')
+
     }
 
     stages {
@@ -59,44 +62,11 @@ pipeline {
             }
         }
 
-        stage('Analyze Services') {
-            parallel {
-                stage('Analyze Frontend') {
-                    steps {
-                        dir('frontend') {
-                            script {
-                                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                                    def scannerHome = tool 'SonarQube Scanner'
-                                    withEnv(["PATH+SONAR=${scannerHome}/bin"]) {
-                                        sh "sonar-scanner -Dsonar.projectKey=frontend-project -Dsonar.host.url=http://13.233.111.164:9000 -Dsonar.login=${SONAR_TOKEN}"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                stage('Analyze Backend') {
-                    steps {
-                        dir('backend') {
-                            script {
-                                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                                    def scannerHome = tool 'SonarQube Scanner'
-                                    withEnv(["PATH+SONAR=${scannerHome}/bin"]) {
-                                        sh "sonar-scanner -Dsonar.projectKey=backend-project -Dsonar.host.url=http://13.233.111.164:9000 -Dsonar.login=${SONAR_TOKEN} -Dsonar.go.coverage.reportPaths=coverage.out"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         stage('Clean Up Old Docker Images') {
             steps {
                 script {
                     echo 'Cleaning up old Docker images'
-                    sh 'docker rmi $(docker images -q) || true' // Safely handle cases with no images
+                    sh 'docker rmi $(docker images -q) || true'
                     sh 'docker image prune -f'
                 }
             }
@@ -152,7 +122,7 @@ pipeline {
             steps {
                 script {
                     echo 'Updating kubeconfig for EKS'
-                    sh 'aws eks update-kubeconfig --name education-eks-6SD0DFqg --region ap-south-1'
+                    sh 'aws eks update-kubeconfig --name education-eks-QQ3fRxG1 --region ap-south-1'
                 }
             }
         }
@@ -176,7 +146,7 @@ pipeline {
         }
         always {
             echo 'Cleaning up resources...'
-            // Any additional cleanup actions can be added here
+            // Additional cleanup actions can be added here
         }
     }
 }
