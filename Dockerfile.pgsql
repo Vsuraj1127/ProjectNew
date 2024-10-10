@@ -11,4 +11,4 @@ ENV POSTGRES_USER=postgres1 \
 EXPOSE 5432
 
 # Copy the initialization SQL script
-#COPY init.sql /docker-entrypoint-initdb.d/
+COPY init.sql /docker-entrypoint-initdb.d/
