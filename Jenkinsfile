@@ -122,7 +122,7 @@ pipeline {
             steps {
                 script {
                     echo 'Updating kubeconfig for EKS'
-                    sh 'aws eks update-kubeconfig --name education-eks-QQ3fRxG1 --region ap-south-1'
+                    sh 'aws eks update-kubeconfig --name education-eks-gb35bcXw --region ap-south-1'
                 }
             }
         }
