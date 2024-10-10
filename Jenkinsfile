@@ -126,6 +126,15 @@ pipeline {
                 }
             }
         }
+        stage('Kubernetes delete Deployment') {
+            steps {
+                script {
+                    echo 'Deploying services to Kubernetes'
+                    sh 'kubectl delete -f deploymentservice.yml --validate=false'
+                }
+            }
+        }
+    }
 
         stage('Kubernetes Deployment') {
             steps {
