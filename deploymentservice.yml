@@ -65,6 +65,13 @@ spec:
       labels:
         app: pgsql
     spec:
+      initContainers: 
+        - name: init-db 
+          image: postgres:13 
+          volumeMounts: 
+          - mountPath: /var/lib/postgresdata
+            name: db-data 
+        command: ["sh", "-c", "test -f /var/lib/postgresdata/PG_VERSION || initdb -D /var/lib/postgresdata"]
       containers:
         - name: pgsql
           image: vsuraj1127/pgsql-image:latest
@@ -89,16 +96,6 @@ spec:
             limits:
               memory: "1Gi"  # Increased memory limit
               cpu: "1"
-          readinessProbe:
-            tcpSocket:
-              port: 5432
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          livenessProbe:
-            tcpSocket:
-              port: 5432
-            initialDelaySeconds: 15
-            periodSeconds: 20
       volumes:
         - name: pg-mount
           persistentVolumeClaim:
@@ -148,16 +145,6 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: DB_PASSWORD
-            - name: DB_HOST
-              value: "pgsql-service.default.svc.cluster.local"
-            - name: DB_USER
-              value: "postgres1"
-            - name: DB_NAME
-              value: "pgdb"
-            - name: DB_PORT
-              value: "5432"
-            - name: DB_SSLMODE
-              value: "disable"
           resources:
             requests:
               memory: "512Mi"
@@ -165,18 +152,6 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "1"
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 15
-            periodSeconds: 20
 
 ---
 apiVersion: v1
@@ -198,7 +173,7 @@ kind: ConfigMap
 metadata:
   name: frontend-config
 data:
-  BACKEND_URL: "http://backend-service:8080/employees"
+  BACKEND_URL: "http://backend-service.default.svc.cluster.local:8080/employees"
 
 ---
 apiVersion: apps/v1
@@ -236,18 +211,6 @@ spec:
             limits:
               memory: "1Gi"  # Increased memory limit
               cpu: "1"
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 3000
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 3000
-            initialDelaySeconds: 15
-            periodSeconds: 20
 
 ---
 apiVersion: v1
