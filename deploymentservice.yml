@@ -25,27 +25,27 @@ data:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
- name: postgresql-pv
- namespace: default
+  name: postgresql-pv
+  namespace: default
 spec:
- persistentVolumeReclaimPolicy: Retain
- accessModes:
-   - ReadWriteOnce
- capacity:
-   storage: 500Mi
- hostPath:
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 500Mi
+  hostPath:
     path: /var/lib/postgresql/data
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
- name: postgresql-pvc
- namespace: default
+  name: postgresql-pvc
+  namespace: default
 spec:
- accessModes:
-   - ReadWriteOnce
- resources:
+  accessModes:
+    - ReadWriteOnce
+  resources:
     requests:
       storage: 500Mi
 
@@ -74,14 +74,14 @@ spec:
             - configMapRef:
                 name: db-config
           env:
-          - name: DB_PASSWORD
-            valueFrom:
-               secretKeyRef:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
                   name: db-secret
                   key: DB_PASSWORD
           volumeMounts:
-          - mountPath: /var/lib/postgresdata
-            name: pg-mount 
+            - mountPath: /var/lib/postgresql/data
+              name: pg-mount 
           resources:
             requests:
               memory: "512Mi"  # Increased memory request
@@ -89,10 +89,20 @@ spec:
             limits:
               memory: "1Gi"  # Increased memory limit
               cpu: "1"
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 15
+            periodSeconds: 20
       volumes:
-      - name: pg-mount
-        persistentVolumeClaim:
-           claimName: postgresql-pvc
+        - name: pg-mount
+          persistentVolumeClaim:
+            claimName: postgresql-pvc
 
 ---
 apiVersion: v1
@@ -133,18 +143,40 @@ spec:
             - configMapRef:
                 name: db-config
           env:
-          - name: DB_PASSWORD
-            valueFrom:
-               secretKeyRef:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
                   name: db-secret
                   key: DB_PASSWORD
+            - name: DB_HOST
+              value: "pgsql-service.default.svc.cluster.local"
+            - name: DB_USER
+              value: "postgres1"
+            - name: DB_NAME
+              value: "pgdb"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_SSLMODE
+              value: "disable"
           resources:
             requests:
-              memory: "256Mi"
+              memory: "512Mi"
               cpu: "500m"
             limits:
-              memory: "512Mi"
+              memory: "1Gi"
               cpu: "1"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
 
 ---
 apiVersion: v1
@@ -188,14 +220,13 @@ spec:
         - name: frontend
           image: vsuraj1127/frontend-image:latest
           env:
-          - name: REACT_APP_SERVER_URL
-            valueFrom:
-               configMapKeyRef:
+            - name: REACT_APP_SERVER_URL
+              valueFrom:
+                configMapKeyRef:
                   name: frontend-config
                   key: BACKEND_URL
-          env:
-          - name: NODE_OPTIONS
-            value: "--max-old-space-size=1024"  # Increase Node.js memory
+            - name: NODE_OPTIONS
+              value: "--max-old-space-size=1024"  # Increase Node.js memory
           ports:
             - containerPort: 3000
           resources:
@@ -205,6 +236,18 @@ spec:
             limits:
               memory: "1Gi"  # Increased memory limit
               cpu: "1"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
 
 ---
 apiVersion: v1
