@@ -134,12 +134,12 @@ spec:
             - containerPort: 8080
           envFrom:
             - configMapRef:
-                name: dB-config
+                name: db-config
           env:
           - name: DB_PASSWORD
             valueFrom:
                secretKeyRef:
-                  name: dB-secret
+                  name: db-secret
                   key: DB_PASSWORD
           resources:
             requests:
