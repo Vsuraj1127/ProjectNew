@@ -65,6 +65,8 @@ spec:
       labels:
         app: pgsql
     spec:
+      securityContext:
+        fsGroup: 999  
       initContainers: 
         - name: init-db 
           image: postgres:13 
