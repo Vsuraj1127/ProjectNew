@@ -65,17 +65,6 @@ spec:
       labels:
         app: pgsql
     spec:
-      securityContext:
-        fsGroup: 999
-        runAsUser: 999   # Set the user ID for the process (non-root)
-        allowPrivilegeEscalation: false
-      initContainers: 
-        - name: init-db 
-          image: postgres:13 
-          volumeMounts: 
-          - mountPath: /var/lib/postgresdata
-            name: pg-mount  # Match with main container
-          command: ["sh", "-c", "test -f /var/lib/postgresdata/PG_VERSION || initdb -D /var/lib/postgresdata"]
       containers:
         - name: pgsql
           image: vsuraj1127/pgsql-image:latest
