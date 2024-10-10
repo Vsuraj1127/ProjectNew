@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-ENV REACT_APP_SERVER_URL=http://backend-service.default.svc.cluster.local:30081/employees
+ENV REACT_APP_SERVER_URL=http://52.66.228.75:30081/employees
 RUN npm run build
 EXPOSE 3000
 CMD ["npm", "run", "start"]  # Corrected: added commas between the arguments
