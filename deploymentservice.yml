@@ -146,13 +146,6 @@ spec:
       targetPort: 8080
   type: ClusterIP
 
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: frontend-config
-data:
-  BACKEND_URL: "http://backend-service.default.svc.cluster.local:8080/employees"
 
 ---
 apiVersion: apps/v1
@@ -175,10 +168,7 @@ spec:
           image: vsuraj1127/frontend-image:latest
           env:
           - name: REACT_APP_SERVER_URL
-            valueFrom:
-               configMapKeyRef:
-                  name: frontend-config
-                  key: BACKEND_URL
+            value: "http://backend-service.default.svc.cluster.local:8080/employees"
           env:
           - name: NODE_OPTIONS
             value: "--max-old-space-size=1024"  # Increase Node.js memory
