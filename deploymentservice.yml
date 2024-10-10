@@ -167,9 +167,6 @@ spec:
         - name: frontend
           image: vsuraj1127/frontend-image:latest
           env:
-          - name: REACT_APP_SERVER_URL
-            value: "http://backend-service.default.svc.cluster.local:8080/employees"
-          env:
           - name: NODE_OPTIONS
             value: "--max-old-space-size=1024"  # Increase Node.js memory
           ports:
