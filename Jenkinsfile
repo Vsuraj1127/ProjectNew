@@ -126,11 +126,11 @@ pipeline {
                 }
             }
         }
-        stage('Kubernetes delete Deployment') {
+        stage('Delete Deployment') {
             steps {
                 script {
                     echo 'Delete services to Kubernetes'
-                    sh 'kubectl delete -f deploymentservice.yml --validate=false'
+                    sh 'kubectl delete -f deploymentservice.yml'
                 }
             }
         }
