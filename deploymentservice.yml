@@ -91,13 +91,6 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresdata
               name: pg-mount
-          resources:
-            requests:
-              memory: "512Mi"
-              cpu: "500m"
-            limits:
-              memory: "1Gi"
-              cpu: "1"
       volumes:
         - name: pg-mount
           persistentVolumeClaim:
@@ -147,13 +140,6 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: DB_PASSWORD
-          resources:
-            requests:
-              memory: "512Mi"
-              cpu: "500m"
-            limits:
-              memory: "1Gi"
-              cpu: "1"
 
 ---
 apiVersion: v1
@@ -207,13 +193,6 @@ spec:
             value: "--max-old-space-size=1024"  # Increase Node.js memory
           ports:
             - containerPort: 3000
-          resources:
-            requests:
-              memory: "512Mi"  # Increased memory request
-              cpu: "500m"
-            limits:
-              memory: "1Gi"  # Increased memory limit
-              cpu: "1"
 
 ---
 apiVersion: v1
