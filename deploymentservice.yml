@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: DB-config
+  name: db-config
   namespace: default
 data:
   DB_HOST: "pgsql-service.default.svc.cluster.local"
@@ -16,7 +16,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: DB-secret
+  name: db-secret
   namespace: default
 data:
   DB_PASSWORD: "postgres@123"
@@ -72,12 +72,12 @@ spec:
             - containerPort: 5432
           envFrom:
             - configMapRef:
-                name: DB-config
+                name: db-config
           env:
           - name: DB_PASSWORD
             valueFrom:
                secretKeyRef:
-                  name: DB-secret
+                  name: db-secret
                   key: DB_PASSWORD
           volumeMounts:
           - mountPath: /var/lib/postgresdata
@@ -103,13 +103,13 @@ metadata:
   namespace: default
 spec:
   selector:
-    app: pgsql-service
+    app: pgsql
   ports:
     - port: 5432
       targetPort: 5432
   type: ClusterIP
 
----
+
 ---
 
 apiVersion: apps/v1
@@ -134,12 +134,12 @@ spec:
             - containerPort: 8080
           envFrom:
             - configMapRef:
-                name: DB-config
+                name: dB-config
           env:
           - name: DB_PASSWORD
             valueFrom:
                secretKeyRef:
-                  name: DB-secret
+                  name: dB-secret
                   key: DB_PASSWORD
           resources:
             requests:
@@ -158,7 +158,7 @@ metadata:
   namespace: default
 spec:
   selector:
-    app: backend-service
+    app: backend
   ports:
     - port: 8080
       targetPort: 8080
@@ -224,7 +224,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-connection-draining-timeout: "30
 spec:
   selector:
-    app: frontend-service
+    app: frontend
   ports:
     - port: 3000
       targetPort: 3000
