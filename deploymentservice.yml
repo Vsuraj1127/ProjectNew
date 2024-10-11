@@ -43,13 +43,12 @@ metadata:
   name: postgresql-pvc
   namespace: default
 spec:
+  storageClassName: ""  
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 500Mi
-  volumeName: postgresql-pv
-
 ---
 apiVersion: apps/v1
 kind: StatefulSet
