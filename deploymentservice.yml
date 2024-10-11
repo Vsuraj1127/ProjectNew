@@ -24,26 +24,12 @@ data:
 
 ---
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: postgresql-pv
-spec:
-  persistentVolumeReclaimPolicy: Retain
-  accessModes:
-    - ReadWriteOnce
-  capacity:
-    storage: 500Mi
-  hostPath:
-    path: /var/lib/postgresql/data
-
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgresql-pvc
   namespace: default
 spec:
-  storageClassName: ""  
+  storageClassName: gp2 
   accessModes:
     - ReadWriteOnce
   resources:
