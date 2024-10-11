@@ -3,6 +3,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+COPY .env ./
 #ENV REACT_APP_SERVER_URL=http://13.202.245.25:30081/employees
 RUN npm run build
 EXPOSE 3000
