@@ -170,6 +170,8 @@ spec:
           env:
           - name: NODE_OPTIONS
             value: "--max-old-space-size=1024"  # Increase Node.js memory
+          - name: REACT_APP_SERVER_URL
+            value: "http://13.202.245.25:30081/employees"
           ports:
             - containerPort: 3000
 
