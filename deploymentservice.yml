@@ -48,6 +48,7 @@ spec:
   resources:
     requests:
       storage: 500Mi
+  volumeName: postgresql-pv
 
 ---
 apiVersion: apps/v1
