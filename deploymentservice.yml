@@ -11,7 +11,7 @@ data:
   DB_NAME: "pgdb"
   DB_PORT: "5432"
   DB_SSLMODE: "disable"
-  ALLOWED_ORIGINS: "http://127.0.0.1:8080"
+  ALLOWED_ORIGINS: "http://13.201.134.202:30080"
 
 ---
 apiVersion: v1
