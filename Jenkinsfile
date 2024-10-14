@@ -122,15 +122,7 @@ pipeline {
             steps {
                 script {
                     echo 'Updating kubeconfig for EKS'
-                    sh 'aws eks update-kubeconfig --name education-eks-1G3HJhYD --region ap-south-1'
-                }
-            }
-        }
-        stage('Delete Deployment') {
-            steps {
-                script {
-                    echo 'Delete services to Kubernetes'
-                    sh 'kubectl delete -f deploymentservice.yml'
+                    sh 'aws eks update-kubeconfig --name education-eks-ztNtylD0 --region ap-south-1'
                 }
             }
         }
