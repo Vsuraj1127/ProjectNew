@@ -35,6 +35,8 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  nodeSelector:
+      kubernetes.io/hostname: ip-10-0-1-237.ap-south-1.compute.internal
 ---
 apiVersion: apps/v1
 kind: StatefulSet
