@@ -68,14 +68,12 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresdata
               name: pg-mount
-          resources:
-           limits:
-              cpu: "250m"
-              memory: 300Mi
       volumes:
         - name: pg-mount
           persistentVolumeClaim:
             claimName: postgresql-pvc
+      nodeSelector:
+         kubernetes.io/hostname: ip-10-0-1-237.ap-south-1.compute.internal
 
 ---
 apiVersion: v1
@@ -121,10 +119,8 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: DB_PASSWORD
-          resources:
-            limits:
-              cpu: "250m"
-              memory: 300Mi
+      nodeSelector:
+         kubernetes.io/hostname: ip-10-0-1-251.ap-south-1.compute.internal  
 
 ---
 apiVersion: v1
@@ -168,10 +164,8 @@ spec:
             value: "http://65.2.168.37:30081/employees"
           ports:
             - containerPort: 3000
-          resources:
-            limits:
-              cpu: "250m"
-              memory: 300Mi
+      nodeSelector:
+         kubernetes.io/hostname: ip-10-0-1-83.ap-south-1.compute.internal 
 
 ---
 apiVersion: v1
