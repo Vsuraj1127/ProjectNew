@@ -68,6 +68,10 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresdata
               name: pg-mount
+          resources:
+           limits:
+              cpu: "250m"
+              memory: 300Mi
       volumes:
         - name: pg-mount
           persistentVolumeClaim:
@@ -117,6 +121,10 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: DB_PASSWORD
+          resources:
+            limits:
+              cpu: "250m"
+              memory: 300Mi
 
 ---
 apiVersion: v1
@@ -160,6 +168,10 @@ spec:
             value: "http://13.200.38.11:30081/employees"
           ports:
             - containerPort: 3000
+          resources:
+            limits:
+              cpu: "250m"
+              memory: 300Mi
 
 ---
 apiVersion: v1
