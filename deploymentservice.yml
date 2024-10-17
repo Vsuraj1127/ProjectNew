@@ -35,8 +35,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  nodeSelector:
-      kubernetes.io/hostname: ip-10-0-1-237.ap-south-1.compute.internal
+
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -74,8 +73,7 @@ spec:
         - name: pg-mount
           persistentVolumeClaim:
             claimName: postgresql-pvc
-      nodeSelector:
-         kubernetes.io/hostname: ip-10-0-1-237.ap-south-1.compute.internal
+
 
 ---
 apiVersion: v1
@@ -121,8 +119,7 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: DB_PASSWORD
-      nodeSelector:
-         kubernetes.io/hostname: ip-10-0-1-251.ap-south-1.compute.internal  
+ 
 
 ---
 apiVersion: v1
@@ -166,8 +163,7 @@ spec:
             value: "http://65.2.168.37:30081/employees"
           ports:
             - containerPort: 3000
-      nodeSelector:
-         kubernetes.io/hostname: ip-10-0-1-83.ap-south-1.compute.internal 
+ 
 
 ---
 apiVersion: v1
