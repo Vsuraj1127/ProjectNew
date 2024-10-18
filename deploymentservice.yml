@@ -9,8 +9,8 @@ spec:
     # Compute resource quotas
     requests.cpu: "2700m"         # 2.7 vCPU requested across the namespace
     limits.cpu: "3200m"           # 3.2 vCPUs is the limit for all pods
-    requests.memory: "3Gi"        # Request 3 GiB of memory
-    limits.memory: "4Gi"          # Limit the total memory usage to 4 GiB
+    requests.memory: "5Gi"        # Request 5 GiB of memory
+    limits.memory: "6Gi"          # Limit the total memory usage to 6 GiB
 
 ---
 
@@ -25,8 +25,8 @@ data:
   DB_NAME: "pgdb"
   DB_PORT: "5432"
   DB_SSLMODE: "disable"
-  ALLOWED_ORIGINS: "http://65.2.168.37:30080"
-
+  ALLOWED_ORIGINS: ""http://65.2.168.37:30080, http://13.232.70.7:30080, http://3.110.117.210:30080"
+  
 ---
 apiVersion: v1
 kind: Secret
@@ -229,7 +229,7 @@ spec:
           resources:
             limits:
               cpu: "1000m"
-              memory: "750Mi"        
+              memory: "1000Mi"        
  
 
 ---
