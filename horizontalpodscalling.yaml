@@ -1,0 +1,57 @@
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-pgsql
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: pgsql
+  minReplicas: 2
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50 # Target 50% CPU utilization
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-frontend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontend
+  minReplicas: 2
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50  # Target 50% CPU utilization
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend
+  minReplicas: 2
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50  # Target 50% CPU utilization
