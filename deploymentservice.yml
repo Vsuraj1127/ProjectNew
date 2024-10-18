@@ -94,9 +94,12 @@ spec:
             - mountPath: /var/lib/postgresdata
               name: pg-mount
           resources:
+            requests:
+              cpu: "500m"
+              memory: "500Mi"
             limits:
               cpu: "500m"
-              memory: "250Mi"
+              memory: "500Mi"
       volumes:
         - name: pg-mount
           persistentVolumeClaim:
@@ -164,6 +167,9 @@ spec:
                   name: db-secret
                   key: DB_PASSWORD
           resources:
+            requests:
+              cpu: "250m"
+              memory: "300Mi"
             limits:
               cpu: "250m"
               memory: "300Mi"   
@@ -226,6 +232,9 @@ spec:
           ports:
             - containerPort: 3000
           resources:
+            requests:
+              cpu: "1000m"
+              memory: "1000Mi"
             limits:
               cpu: "1000m"
               memory: "1000Mi"        
