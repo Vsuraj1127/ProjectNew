@@ -151,10 +151,10 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: DB_PASSWORD
-        resources:
-          limits:
-            cpu: "250m"
-            memory: 300Mi   
+      resources:
+        limits:
+          cpu: "250m"
+          memory: 300Mi   
  
 
 ---
