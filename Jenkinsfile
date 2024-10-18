@@ -127,11 +127,29 @@ pipeline {
             }
         }
 
+        stage('Kubernetes Delete Deployment') {
+            steps {
+                script {
+                    echo 'Delete services on Kubernetes'
+                    sh 'kubectl delete -f deploymentservice.yml'
+                }
+            }
+        }
+
         stage('Kubernetes Deployment') {
             steps {
                 script {
                     echo 'Deploying services to Kubernetes'
                     sh 'kubectl apply -f deploymentservice.yml --validate=false'
+                }
+            }
+        }
+
+        stage('Horizontal Pod Scalling') {
+            steps {
+                script {
+                    echo 'Deploying Horizontal Pod scalling'
+                    sh 'kubectl apply -f horizontalpodscalling.yaml --validate=false'
                 }
             }
         }
