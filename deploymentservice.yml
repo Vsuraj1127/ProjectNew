@@ -38,7 +38,7 @@ spec:
   selector:
     matchExpressions:
     - key: kubernetes.io/hostname
-      operator: "In"
+      operator: In
       values:
       - ip-10-0-1-237.ap-south-1.compute.internal
 
@@ -58,6 +58,15 @@ spec:
       labels:
         app: pgsql
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - ip-10-0-1-237.ap-south-1.compute.internal
       containers:
         - name: pgsql
           image: vsuraj1127/pgsql-image:latest
@@ -79,8 +88,7 @@ spec:
         - name: pg-mount
           persistentVolumeClaim:
             claimName: postgresql-pvc
-      nodeSelector:
-          kubernetes.io/hostnameL: ip-10-0-1-237.ap-south-1.compute.internal
+   
 
 
 ---
@@ -113,6 +121,15 @@ spec:
       labels:
         app: backend
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - ip-10-0-1-251.ap-south-1.compute.internal
       containers:
         - name: backend
           image: vsuraj1127/backend-image:latest
@@ -161,6 +178,15 @@ spec:
       labels:
         app: frontend
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - ip-10-0-2-83.ap-south-1.compute.internal
       containers:
         - name: frontend
           image: vsuraj1127/frontend-image:latest
