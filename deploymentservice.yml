@@ -86,8 +86,11 @@ spec:
       volumes:
         - name: pg-mount
           persistentVolumeClaim:
-            claimName: postgresql-pvc
-   
+             claimName: postgresql-pvc
+      resources:
+          limits:
+            cpu: "500m"
+            memory: 500Mi   
 
 
 ---
@@ -148,6 +151,10 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: DB_PASSWORD
+        resources:
+          limits:
+            cpu: "250m"
+            memory: 300Mi   
  
 
 ---
@@ -206,6 +213,10 @@ spec:
             value: "http://65.2.168.37:30081/employees"
           ports:
             - containerPort: 3000
+      resources:
+        limits:
+          cpu: "300m"
+          memory: 400Mi        
  
 
 ---
