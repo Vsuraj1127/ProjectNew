@@ -7,8 +7,8 @@ metadata:
 spec:
   hard:
     # Compute resource quotas
-    requests.cpu: "2700m"         # 2.7 vCPU requested across the namespace
-    limits.cpu: "3200m"           # 3.2 vCPUs is the limit for all pods
+    requests.cpu: "3000m"         # 3 vCPU requested across the namespace
+    limits.cpu: "3500m"           # 3.5 vCPUs is the limit for all pods
     requests.memory: "5Gi"        # Request 5 GiB of memory
     limits.memory: "6Gi"          # Limit the total memory usage to 6 GiB
 
@@ -95,10 +95,10 @@ spec:
               name: pg-mount
           resources:
             requests:
-              cpu: "500m"
+              cpu: "250m"
               memory: "500Mi"
             limits:
-              cpu: "500m"
+              cpu: "250m"
               memory: "500Mi"
       volumes:
         - name: pg-mount
@@ -233,11 +233,11 @@ spec:
             - containerPort: 3000
           resources:
             requests:
-              cpu: "1000m"
-              memory: "1000Mi"
+              cpu: "500m"
+              memory: "750Mi"
             limits:
-              cpu: "1000m"
-              memory: "1000Mi"        
+              cpu: "500m"
+              memory: "750Mi"        
  
 
 ---
