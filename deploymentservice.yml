@@ -7,7 +7,7 @@ metadata:
 spec:
   hard:
     # Compute resource quotas
-    requests.cpu: "2500m"         # 2.2 vCPU requested across the namespace
+    requests.cpu: "2500m"         # 2.5 vCPU requested across the namespace
     limits.cpu: "3200m"           # 3.2 vCPUs is the limit for all pods
     requests.memory: "3Gi"        # Request 3 GiB of memory
     limits.memory: "4Gi"          # Limit the total memory usage to 4 GiB
