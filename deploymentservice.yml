@@ -96,8 +96,8 @@ spec:
               name: pg-mount
           resources:
             limits:
-              cpu: "500m"
-              memory: "500Mi"
+              cpu: "250m"
+              memory: "250Mi"
       volumes:
         - name: pg-mount
           persistentVolumeClaim:
@@ -228,8 +228,8 @@ spec:
             - containerPort: 3000
           resources:
             limits:
-              cpu: "700m"
-              memory: "400Mi"        
+              cpu: "1000m"
+              memory: "750Mi"        
  
 
 ---
