@@ -13,7 +13,6 @@ spec:
     limits.memory: "6Gi"          # Limit the total memory usage to 6 GiB
 
 ---
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -25,7 +24,7 @@ data:
   DB_NAME: "pgdb"
   DB_PORT: "5432"
   DB_SSLMODE: "disable"
-  ALLOWED_ORIGINS: ""http://65.2.168.37:30080, http://13.232.70.7:30080, http://3.110.117.210:30080"
+  ALLOWED_ORIGINS: "http://65.2.168.37:30080, http://13.232.70.7:30080, http://3.110.117.210:30080"
   
 ---
 apiVersion: v1
