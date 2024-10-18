@@ -95,7 +95,7 @@ spec:
               name: pg-mount
           resources:
             limits:
-              cpu: "250m"
+              cpu: "500m"
               memory: "250Mi"
       volumes:
         - name: pg-mount
